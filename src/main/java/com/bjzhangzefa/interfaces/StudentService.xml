@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bjzhangzefa.interfaces.StudentService"><!--查询返回对象的接口全限定名-->
+    <!--        id代表sql语句             返回结果构成的对象类型的全限定名-->
+    <select id="returnList" resultType="com.bjzhangzefa.dao.Student">
+        select id,name,age,address,phone from student;<!--sql语句-->
+    </select>
+    <select id = "selectById" resultType="com.bjzhangzefa.dao.Student" parameterType="int">
+        select id,name,age,address,phone from student where id = #{id};
+    </select>
+    <select id = "selectStudent" resultType="com.bjzhangzefa.dao.Student" >
+        select id,name,age,address,phone from student where  name = #{obj.name} or age = #{ppp.age} ;
+    </select>
+    <select id = "selectByName" resultType="com.bjzhangzefa.dao.Student" >
+        select id,name,age,address,phone from student where  name = #{name};
+    </select>
+    <select id = "selectName" resultType="com.bjzhangzefa.dao.Student" >
+    </select>
+    <insert id = "insert">
+        insert into  student (name,age,address,phone) values (#{name},#{age},#{address},#{phone});
+    </insert>
+    <update id = "updateStudent">
+        update student set name = #{setName} where name = #{getName};
+    </update>
+    <insert id="insertStudent">
+        insert into student (name,age,address,phone) values (#{name},#{age},#{address},#{phone})
+    </insert>
+    <select id = "resultMap" resultType="java.util.Map" >
+        select id,name,age,address,phone from student where id = #{id};
+    </select>
+    <resultMap id="map" type="com.bjzhangzefa.dao.Student">
+
+        <id column="id" property="id"/>
+        <result column="name" property="address"/>
+    </resultMap>
+    <resultMap id="teacher" type="com.bjzhangzefa.dao.Teacher">
+        <!--     id为查询结果的id   property为返回对象的属性 -->
+        <id column="id" property="teacherid"/>
+        <result column="name" property="teachername"/>
+        <result column="address" property="teacheraddress"/>
+        <result column="age" property="teacherage"/>
+        <result column="phone" property="teacherphone"/>
+    </resultMap>
+    <select id = "resultTeacher" resultMap="teacher">
+        select id,name,address,age,phone from student;
+    </select>
+    <select id = "selectTeacher" resultType="com.bjzhangzefa.dao.Teacher">
+        select id as teacherid,name as teachername,address as teacheraddress,
+               age as teacherage,phone as teacherphone from student;
+    </select>
+    <select id = "mohuOne" resultType="com.bjzhangzefa.dao.Student">
+        select id,name,address,age,phone from student where phone like #{phone} ;
+    </select>
+    <select id = "mohuTwo" resultType="com.bjzhangzefa.dao.Student">
+        select id,name,address,age,phone from student where phone like "%" #{phone} "%" ;
+    </select>
+    <select id = "whereIf" resultType="com.bjzhangzefa.dao.Student">
+
+        <if test="name != '' and name != null">
+            select name,address,age,phone from student where name = #{name}
+        </if>
+        <if test="id != null and name != ''" >
+            or   id = #{id}
+        </if>
+    </select>
+    <select id = "whereIfOr" resultType="com.bjzhangzefa.dao.Student">
+        select name,address,age,phone from student
+        <where>
+            <if test="name != '' and name != null">
+                name = #{name}
+            </if>
+            <if test="id != null and name != ''" >
+                or   id = #{id}
+            </if>
+        </where>
+    </select>
+    <select id ="listForeach" resultType="com.bjzhangzefa.dao.Student">
+            select * from student where id in (
+        <foreach collection="list" item="stu" separator=",">
+            #{stu}
+        </foreach>)
+    </select>
+    <sql id="sqlId">
+        select * from student
+    </sql>
+    <select id="sql" resultType="com.bjzhangzefa.dao.Student">
+        <include refid="sqlId"/>
+    </select>
+</mapper>
